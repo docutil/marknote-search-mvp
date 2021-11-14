@@ -1,0 +1,10 @@
+---
+port: 10086
+repoRoot: repos
+meiliSearch:
+  masterKey: ''
+  host: http://127.0.0.1:7700
+sites:
+  yuekcc:
+    repoUrl: https://ghproxy.com/https://github.com/yuekcc/yuekcc.github.io
+    doc: docs
