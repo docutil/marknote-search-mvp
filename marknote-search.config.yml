@@ -7,4 +7,4 @@ meiliSearch:
 sites:
   yuekcc:
     repoUrl: https://ghproxy.com/https://github.com/yuekcc/yuekcc.github.io
-    doc: docs
+    docRoot: docs

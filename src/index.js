@@ -1,5 +1,6 @@
 const express = require('express');
 
+const { logger } = require('./util/logger');
 const { startUpdateIndex } = require('./uploader');
 const { CONFIG } = require('./config');
 const { searchInEngine } = require('./search');
@@ -26,5 +27,5 @@ app.use('/api/v1/:site/hook', (req, res) => {
 });
 
 app.listen(CONFIG.port, () => {
-  console.log(`Host at http://localhost:${CONFIG.port}`);
+  logger.info(`Host at http://localhost:${CONFIG.port}`);
 });
