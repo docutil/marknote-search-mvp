@@ -10,6 +10,7 @@ const { logger } = require('./util/logger');
 
 const msClient = new MeiliSearch({
   host: CONFIG.meiliSearch.host,
+  apiKey: CONFIG.meiliSearch.masterKey,
 });
 
 exports.searchInEngine = async function searchInEngine({ indexName, keyword, pageIndex, pageSize }) {
@@ -80,7 +81,7 @@ exports.updateIndex = async function updateIndex(indexName, commitMessage) {
     return;
   }
 
-  logger.info('got markdown files, count = %d', files.length);
+  logger.info('got markdown files, count = %i', files.length);
 
   const markdownFileMetadataList = files.map(file => {
     const pathFromRepoRoot = trimStart(file, siteRepoRoot);
@@ -107,14 +108,18 @@ exports.updateIndex = async function updateIndex(indexName, commitMessage) {
   const data = await Promise.all(generated);
   const flattenData = data.flat(Infinity);
 
-  logger.info('generated index base data, count = %d', flattenData.length);
+  logger.info('generated index base data, count = %i', flattenData.length);
   logger.info(`send to search engine`);
 
   const index = msClient.index(indexName);
 
   // TODO 优化，现在是先清空全部索引数据，再全新创建
-  await index.deleteAllDocuments();
-  logger.info('old index data removed');
+  try {
+    await index.deleteAllDocuments();
+    logger.info('old index data removed');
+  } catch (err) {
+    logger.warn('failed to clean old index data, %s', err);
+  }
 
   await index.addDocuments(flattenData);
   logger.info('new index data added');
