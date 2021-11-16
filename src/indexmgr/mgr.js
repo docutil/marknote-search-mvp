@@ -61,6 +61,7 @@ function getAllMarkdownFiles(docsRoot) {
 }
 
 async function readFileAndSplit(filePath) {
+  // TODO: 修改分段的方式，walk markdown 文件，将其中的 block 分出
   const text = await fs.readFile(filePath, 'utf-8');
   return text
     .split('\n')
