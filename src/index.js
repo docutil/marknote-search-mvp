@@ -1,11 +1,21 @@
 const express = require('express');
 
+const { CONFIG } = require('./util/config');
 const { logger } = require('./util/logger');
-const { startUpdateIndex } = require('./uploader');
-const { CONFIG } = require('./config');
-const { searchInEngine } = require('./search');
+const { updateIndexAsync, searchInEngine, checkHealth } = require('./indexmgr');
 
 const app = express();
+
+app.use('/api/v1/status', async (req, res) => {
+  const isEngineOk = await checkHealth();
+  if (isEngineOk) {
+    res.json({ message: 'ok' });
+    return;
+  }
+
+  res.json({ error: true, message: 'engine is down' });
+});
+
 app.use('/api/v1/:site/search', async (req, res) => {
   const indexName = req.params.site;
   const { keyword, pageIndex, pageSize } = req.query;
@@ -22,8 +32,8 @@ app.use('/api/v1/:site/search', async (req, res) => {
 app.use('/api/v1/:site/hook', (req, res) => {
   const indexName = req.params.site;
 
-  startUpdateIndex({ indexName, commitMessage: {} });
-  res.json({ status: 'start-update-index' });
+  updateIndexAsync({ indexName, commitMessage: {} });
+  res.json({ message: 'start-update-index' });
 });
 
 app.listen(CONFIG.port, () => {

@@ -1,17 +1,23 @@
-const { MeiliSearch } = require('meilisearch');
-const { CONFIG } = require('./config');
-const { $, cd } = require('zx');
 const fs = require('fs/promises');
-const glob = require('glob');
-const { trimStart, uniqueId } = require('lodash');
 const path = require('path');
+
+const { $, cd } = require('zx');
+const { MeiliSearch } = require('meilisearch');
+const { trimStart, uniqueId } = require('lodash');
 const checksum = require('checksum');
-const { logger } = require('./util/logger');
+const glob = require('glob');
+
+const { CONFIG } = require('../util/config');
+const { logger } = require('../util/logger');
 
 const msClient = new MeiliSearch({
   host: CONFIG.meiliSearch.host,
   apiKey: CONFIG.meiliSearch.masterKey,
 });
+
+exports.checkHealth = async function checkHealth() {
+  return msClient.isHealthy();
+};
 
 exports.searchInEngine = async function searchInEngine({ indexName, keyword, pageIndex, pageSize }) {
   const index = msClient.index(indexName);
