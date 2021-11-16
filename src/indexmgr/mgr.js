@@ -10,6 +10,8 @@ const glob = require('glob');
 const { CONFIG } = require('../util/config');
 const { logger } = require('../util/logger');
 
+$.verbose = false;
+
 const msClient = new MeiliSearch({
   host: CONFIG.meiliSearch.host,
   apiKey: CONFIG.meiliSearch.masterKey,
