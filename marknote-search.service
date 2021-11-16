@@ -1,0 +1,14 @@
+[Unit]
+Description=Marknote Full-text Search Server
+After=network.target
+
+[Service]
+Type=simple
+User=lighthouse  # 执行程序的user和group
+Group=lighthouse
+ExecStart=/opt/node/bin/node index.js
+WorkingDirectory=/opt/lambdadrivers/marknote-search
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
