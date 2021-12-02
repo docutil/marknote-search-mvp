@@ -1,7 +1,7 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events';
 
-const { updateIndex } = require('./mgr');
-const { logger } = require('../util/logger');
+import { updateIndex } from './mgr';
+import { logger } from '../util/logger';
 
 class IndexMgrEvents extends EventEmitter {}
 const indexMgrEvents = new IndexMgrEvents();

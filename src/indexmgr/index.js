@@ -1,5 +1,5 @@
-const { updateIndexAsync } = require('./events');
-const { searchInEngine, checkHealth } = require('./mgr');
+import { updateIndexAsync } from './events';
+import { searchInEngine, checkHealth } from './mgr';
 
 module.exports = {
   updateIndexAsync,

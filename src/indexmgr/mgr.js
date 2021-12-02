@@ -1,14 +1,13 @@
-const fs = require('fs/promises');
-const path = require('path');
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
-const { $, cd } = require('zx');
-const { MeiliSearch } = require('meilisearch');
-const { trimStart, uniqueId } = require('lodash');
-const checksum = require('checksum');
-const glob = require('glob');
-
-const { CONFIG } = require('../util/config');
-const { logger } = require('../util/logger');
+import { $, cd } from 'zx';
+import { MeiliSearch } from 'meilisearch';
+import { trimStart, uniqueId } from 'lodash';
+import checksum from 'checksum';
+import glob from 'glob';
+import { CONFIG } from '../util/config';
+import { logger } from '../util/logger';
 
 $.verbose = false;
 
@@ -17,14 +16,14 @@ const msClient = new MeiliSearch({
   apiKey: CONFIG.meiliSearch.masterKey,
 });
 
-exports.checkHealth = async function checkHealth() {
+export async function checkHealth() {
   return msClient.isHealthy();
-};
+}
 
-exports.searchInEngine = async function searchInEngine({ indexName, keyword, pageIndex, pageSize }) {
+export async function searchInEngine({ indexName, keyword, pageIndex, pageSize }) {
   const index = msClient.index(indexName);
   return index.search(keyword, { limit: parseInt(pageSize), offset: parseInt((pageIndex - 1) * pageSize) });
-};
+}
 
 async function downloadSiteSource(siteName, repoUrl) {
   logger.info('download repo, siteName = %s, repoUrl = %s', siteName, repoUrl);
@@ -71,7 +70,7 @@ async function readFileAndSplit(filePath) {
     .filter(it => it !== '');
 }
 
-exports.updateIndex = async function updateIndex(indexName, commitMessage) {
+export async function updateIndex(indexName, commitMessage) {
   const siteConfig = CONFIG.sites[indexName];
 
   try {
@@ -137,7 +136,7 @@ exports.updateIndex = async function updateIndex(indexName, commitMessage) {
   logger.info('index setting updated');
 
   logger.info('index updated');
-};
+}
 
 async function configIndex(indexName) {
   const index = msClient.index(indexName);

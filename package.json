@@ -2,6 +2,7 @@
   "name": "marknote-search-mvp",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "ncc build src/index.js -o dist",
     "test": "jest"

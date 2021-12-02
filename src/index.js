@@ -1,8 +1,7 @@
-const express = require('express');
-
-const { CONFIG } = require('./util/config');
-const { logger } = require('./util/logger');
-const { updateIndexAsync, searchInEngine, checkHealth } = require('./indexmgr');
+import express from 'express';
+import { CONFIG } from './util/config';
+import { logger } from './util/logger';
+import { updateIndexAsync, searchInEngine, checkHealth } from './indexmgr';
 
 const app = express();
 

@@ -1,4 +1,5 @@
-const { createLogger, format, transports } = require('winston');
+import { createLogger, format, transports } from 'winston';
+
 const { combine, timestamp, splat, printf } = format;
 
 const simpleFormat = () =>
@@ -6,7 +7,7 @@ const simpleFormat = () =>
     return `${timestamp} ${level}: ${message}`;
   });
 
-exports.logger = createLogger({
+export const logger = createLogger({
   format: combine(timestamp(), splat(), simpleFormat()),
   transports: [new transports.Console(), new transports.File({ filename: 'searchserver.log' })],
 });
