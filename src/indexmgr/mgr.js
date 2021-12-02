@@ -8,6 +8,8 @@ import checksum from 'checksum';
 import glob from 'glob';
 import { CONFIG } from '../util/config';
 import { logger } from '../util/logger';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { toString } from 'mdast-util-to-string';
 
 $.verbose = false;
 
@@ -64,10 +66,9 @@ function getAllMarkdownFiles(docsRoot) {
 async function readFileAndSplit(filePath) {
   // TODO: 修改分段的方式，walk markdown 文件，将其中的 block 分出
   const text = await fs.readFile(filePath, 'utf-8');
-  return text
-    .split('\n')
-    .map(it => it.trim())
-    .filter(it => it !== '');
+
+  const tree = fromMarkdown(text);
+  return tree.children?.map(block => toString(block).trim()).filter(it => it !=== '');
 }
 
 export async function updateIndex(indexName, commitMessage) {
