@@ -68,7 +68,7 @@ async function readFileAndSplit(filePath) {
   const text = await fs.readFile(filePath, 'utf-8');
 
   const tree = fromMarkdown(text);
-  return tree.children?.map(block => toString(block).trim()).filter(it => it !=== '');
+  return tree.children?.map(block => toString(block).trim()).filter(it => it !== '');
 }
 
 export async function updateIndex(indexName, commitMessage) {
