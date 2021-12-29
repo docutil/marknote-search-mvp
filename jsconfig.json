@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "es2020",
+        "jsx": "preserve",
+        "strictFunctionTypes": true
+    },
+    "include": ["src/**/*"],
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*"
+    ]
+}
