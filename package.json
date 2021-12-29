@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild --outfile=dist/index.js --bundle --platform=node --target=node16 --format=cjs src/index.js",
-    "run": "node dist/index.js",
+    "build": "esbuild --outfile=dist/index.js --minify --bundle --platform=node --target=node16 --format=cjs src/index.js",
+    "start": "node dist/index.js",
     "test": "jest"
   },
   "author": "yuekcc",
@@ -54,7 +54,7 @@
     "lodash": "^4.17.21",
     "mdast-util-from-markdown": "^1.2.0",
     "mdast-util-to-string": "^3.1.0",
-    "meilisearch": "^0.22.1",
+    "meilisearch": "^0.23.0",
     "winston": "^3.3.3",
     "yaml": "^1.10.2",
     "zx": "^4.2.0"

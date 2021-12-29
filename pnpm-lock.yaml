@@ -14,7 +14,7 @@ specifiers:
   lodash: ^4.17.21
   mdast-util-from-markdown: ^1.2.0
   mdast-util-to-string: ^3.1.0
-  meilisearch: ^0.22.1
+  meilisearch: ^0.23.0
   prettier: ^2.4.0
   winston: ^3.3.3
   yaml: ^1.10.2
@@ -28,7 +28,7 @@ dependencies:
   lodash: 4.17.21
   mdast-util-from-markdown: 1.2.0
   mdast-util-to-string: 3.1.0
-  meilisearch: 0.22.3
+  meilisearch: 0.23.0
   winston: 3.3.3
   yaml: 1.10.2
   zx: 4.2.0
@@ -2919,8 +2919,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /meilisearch/0.22.3:
-    resolution: {integrity: sha512-Syocfn586JhD0AoEhiu9x5S9xV0z9WPLEDeNaiGFlqR3JJMVQYj0WR5vZ7ZCj/mCkl1VD0GiOW+NsysPY6bWXg==, tarball: meilisearch/download/meilisearch-0.22.3.tgz}
+  /meilisearch/0.23.0:
+    resolution: {integrity: sha512-bLNonPJK2pJz2akjwolcc/Eqnz/GKJ7y1I4Flg4zjL+v0yPFyIGFFdfe0dw93JWFJWj/RbLS2Q6dDTobZQ9Ehg==, tarball: meilisearch/download/meilisearch-0.23.0.tgz}
     dependencies:
       cross-fetch: 3.1.4
     dev: false
