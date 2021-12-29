@@ -182,7 +182,7 @@ async function resolveTasks() {
 }
 
 export function updateIndex(indexName, commitMessage) {
-  tasks.push({ indexName, commitMessage });
+  tasks.list.push({ indexName, commitMessage });
 
   if (tasks.list.length > 0 && !tasks.running) {
     resolveTasks();
