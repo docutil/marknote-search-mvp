@@ -2,14 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { $, cd } from 'zx';
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import { MeiliSearch } from 'meilisearch';
+import { toString } from 'mdast-util-to-string';
 import { trimStart, uniqueId } from 'lodash';
 import checksum from 'checksum';
 import glob from 'glob';
+
 import { CONFIG } from '../util/config';
 import { logger } from '../util/logger';
-import { fromMarkdown } from 'mdast-util-from-markdown';
-import { toString } from 'mdast-util-to-string';
 
 $.verbose = false;
 
@@ -27,7 +28,7 @@ export async function searchInEngine({ indexName, keyword, pageIndex, pageSize }
   return index.search(keyword, { limit: parseInt(pageSize), offset: parseInt((pageIndex - 1) * pageSize) });
 }
 
-async function downloadSiteSource(siteName, repoUrl) {
+async function pullRepo(siteName, repoUrl) {
   logger.info('download repo, siteName = %s, repoUrl = %s', siteName, repoUrl);
 
   await $`pwd`;
@@ -36,19 +37,33 @@ async function downloadSiteSource(siteName, repoUrl) {
   await $`mkdir -p ${CONFIG.repoRoot}`;
   await cd(CONFIG.repoRoot);
 
-  // 测试目录是否已经存在，没有的情况下，执行 git clone
-  await $`test -d ${siteName} || git clone ${repoUrl} ${siteName}`;
+  // 构建网站的目录是否已经存在
+  const checkSiteNameDir = await $`test -d ${siteName}`.exitCode;
+  const repoDirExists = checkSiteNameDir === 0;
 
-  // git pull
-  if ((await $`test -d ${siteName} && test -d ${siteName}/.git`.exitCode) === 0) {
-    await cd(`${CONFIG.repoRoot}/${siteName}`);
-    await $`git pull`;
+  if (repoDirExists) {
+    const checkDotGitDir = await $`test -d ${siteName}/.git`.exitCode;
+    const dotGitDirExists = checkDotGitDir === 0;
+    if (dotGitDirExists) {
+      cd(`${CONFIG.repoRoot}/${siteName}`);
+      const updated = await $`git pull`.exitCode;
+
+      if (updated === 0) {
+        logger.info(`repo update to date`);
+        return;
+      }
+    }
+
+    // 没有 .git 目录或者 git pull 失败
+    await $`rm -rf ${siteName}`;
+    logger.info('remove dir to re-clone');
   }
 
-  logger.info(`repo update to date`);
+  await $`git clone ${repoUrl} ${siteName}`;
+  logger.info(`repo cloned`);
 }
 
-function getAllMarkdownFiles(docsRoot) {
+function getAllMdFiles(docsRoot) {
   const _docsRoot = docsRoot.replaceAll(/\/+$/g, '');
   const pattern = `${_docsRoot}/**/*.md`;
 
@@ -63,19 +78,29 @@ function getAllMarkdownFiles(docsRoot) {
   });
 }
 
-async function readFileAndSplit(filePath) {
-  // TODO: 修改分段的方式，walk markdown 文件，将其中的 block 分出
+async function readMdBlocks(filePath) {
   const text = await fs.readFile(filePath, 'utf-8');
 
+  // 从 markdown ast 中获取每个 block 块
   const tree = fromMarkdown(text);
   return tree.children?.map(block => toString(block).trim()).filter(it => it !== '');
 }
 
-export async function updateIndex(indexName, commitMessage) {
+async function configIndex(indexName) {
+  const index = msClient.index(indexName);
+
+  await index.resetSettings();
+  await index.updateSettings({
+    searchableAttributes: ['line'],
+    displayedAttributes: ['line', 'path'],
+  });
+}
+
+async function refreshIndex(indexName, commitMessage) {
   const siteConfig = CONFIG.sites[indexName];
 
   try {
-    await downloadSiteSource(indexName, siteConfig.repoUrl);
+    await pullRepo(indexName, siteConfig.repoUrl);
   } catch (err) {
     logger.error('failed to pull latest commit, %s', err);
     return;
@@ -83,16 +108,19 @@ export async function updateIndex(indexName, commitMessage) {
 
   const siteRepoRoot = path.join(CONFIG.repoRoot, indexName).replace('\\', '/');
   const dir = path.join(siteRepoRoot, siteConfig.docRoot).replace('\\', '/');
-  const files = await getAllMarkdownFiles(dir);
+  const files = await getAllMdFiles(dir);
 
-  if (files.length === 0) {
+  // 忽略以 _ 开头的 md 文件
+  const filtered = files.filter(it => !it.startsWith('_'));
+
+  if (filtered.length === 0) {
     logger.info('no markdown file found, nothing to do');
     return;
   }
 
-  logger.info('got markdown files, count = %i', files.length);
+  logger.info('got markdown files, count = %i', filtered.length);
 
-  const markdownFileMetadataList = files.map(file => {
+  const markdownFileMetadataList = filtered.map(file => {
     const pathFromRepoRoot = trimStart(file, siteRepoRoot);
     return {
       path: pathFromRepoRoot, // 相对文章网站的路径
@@ -104,7 +132,7 @@ export async function updateIndex(indexName, commitMessage) {
   logger.info(`start to generate index original data`);
 
   const generated = markdownFileMetadataList.map(async meta => {
-    const lines = await readFileAndSplit(meta.storePath);
+    const lines = await readMdBlocks(meta.storePath);
     return lines.map(line => {
       return {
         ...meta,
@@ -139,12 +167,24 @@ export async function updateIndex(indexName, commitMessage) {
   logger.info('index updated');
 }
 
-async function configIndex(indexName) {
-  const index = msClient.index(indexName);
+const tasks = { list: [], running: false };
 
-  await index.resetSettings();
-  await index.updateSettings({
-    searchableAttributes: ['line'],
-    displayedAttributes: ['line', 'path'],
-  });
+async function resolveTasks() {
+  const { indexName, commitMessage } = tasks.list.pop();
+  await refreshIndex(indexName, commitMessage);
+
+  if (tasks.list.length === 0) {
+    tasks.running = false;
+    return;
+  }
+
+  return resolveTasks();
+}
+
+export function updateIndex(indexName, commitMessage) {
+  tasks.push({ indexName, commitMessage });
+
+  if (tasks.list.length > 0 && !tasks.running) {
+    resolveTasks();
+  }
 }

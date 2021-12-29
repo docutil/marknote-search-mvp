@@ -1,11 +1,18 @@
 import express from 'express';
+import cors from 'cors';
+
 import { CONFIG } from './util/config';
 import { logger } from './util/logger';
-import { updateIndexAsync, searchInEngine, checkHealth } from './indexmgr';
+import { updateIndexAsync, searchInEngine, checkHealth } from './indexer';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    allowedHeaders: ['x-mn-search-token'],
+  }),
+);
 
 app.get('/api/v1/status', async (req, res) => {
   const isEngineOk = await checkHealth();
