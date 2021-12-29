@@ -47,13 +47,13 @@
   },
   "dependencies": {
     "checksum": "^1.0.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "glob": "^7.2.0",
     "lodash": "^4.17.21",
     "mdast-util-from-markdown": "^1.2.0",
     "mdast-util-to-string": "^3.1.0",
     "meilisearch": "^0.22.1",
-    "sqlite3": "^5.0.2",
     "winston": "^3.3.3",
     "yaml": "^1.10.2",
     "zx": "^4.2.0"
