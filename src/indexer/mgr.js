@@ -7,7 +7,7 @@ import { MeiliSearch } from 'meilisearch';
 import { toString } from 'mdast-util-to-string';
 import { trimStart, uniqueId } from 'lodash';
 import checksum from 'checksum';
-import glob from 'glob';
+import { globby } from 'globby';
 
 import { CONFIG } from '../util/config';
 import { logger } from '../util/logger';
@@ -67,15 +67,7 @@ function getAllMdFiles(docsRoot) {
   const _docsRoot = docsRoot.replaceAll(/\/+$/g, '');
   const pattern = `${_docsRoot}/**/*.md`;
 
-  return new Promise((resolve, reject) => {
-    glob(pattern, (err, files) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(files);
-    });
-  });
+  return globby(pattern);
 }
 
 async function readMdBlocks(filePath) {
