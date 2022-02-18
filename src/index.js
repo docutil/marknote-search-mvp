@@ -29,9 +29,15 @@ app.get('/api/v1/:site/search', async (req, res) => {
   const { keyword, pageIndex, pageSize } = req.query;
 
   if (keyword && pageIndex && pageSize) {
-    const searchResult = await searchInEngine({ indexName, keyword, pageIndex, pageSize });
-    res.json(searchResult);
-    return;
+    try {
+      const searchResult = await searchInEngine({ indexName, keyword, pageIndex, pageSize });
+      res.json(searchResult);
+      return;
+    } catch (err) {
+      logger.error(`searchInEngine error: ${err}`);
+      res.status(500).json({ error: true, message: 'server down' });
+      return;
+    }
   }
 
   res.status(400).json({ error: true, message: 'missing parameter' });

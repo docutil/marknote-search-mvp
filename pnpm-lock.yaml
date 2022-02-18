@@ -14,7 +14,7 @@ specifiers:
   lodash: ^4.17.21
   mdast-util-from-markdown: ^1.2.0
   mdast-util-to-string: ^3.1.0
-  meilisearch: ^0.23.0
+  meilisearch: ^0.24.0
   prettier: ^2.4.0
   winston: ^3.3.3
   yaml: ^1.10.2
@@ -28,7 +28,7 @@ dependencies:
   lodash: 4.17.21
   mdast-util-from-markdown: 1.2.0
   mdast-util-to-string: 3.1.0
-  meilisearch: 0.23.0
+  meilisearch: 0.24.0
   winston: 3.3.3
   yaml: 1.10.2
   zx: 4.2.0
@@ -1214,7 +1214,7 @@ packages:
     dev: false
 
   /cross-fetch/3.1.4:
-    resolution: {integrity: sha1-lyPzo6JHv4uJA586OAqSROj6Lzk=, tarball: cross-fetch/download/cross-fetch-3.1.4.tgz}
+    resolution: {integrity: sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==}
     dependencies:
       node-fetch: 2.6.1
     dev: false
@@ -1947,7 +1947,7 @@ packages:
     dev: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=, tarball: fsevents/download/fsevents-2.3.2.tgz}
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -2925,8 +2925,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /meilisearch/0.23.0:
-    resolution: {integrity: sha512-bLNonPJK2pJz2akjwolcc/Eqnz/GKJ7y1I4Flg4zjL+v0yPFyIGFFdfe0dw93JWFJWj/RbLS2Q6dDTobZQ9Ehg==, tarball: meilisearch/download/meilisearch-0.23.0.tgz}
+  /meilisearch/0.24.0:
+    resolution: {integrity: sha512-qME1dsHZePBQi8qFdhbilcFzaL+oZJgUuls+FZ23hHpdhJI+iMFSmjjcfsxq5hdg2qczbCXv7yAo3Sh8xgfkgA==}
     dependencies:
       cross-fetch: 3.1.4
     dev: false
