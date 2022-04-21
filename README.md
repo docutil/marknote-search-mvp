@@ -1,6 +1,8 @@
 # marknote 搜索服务 （MVP）
 
-见：https://yuekcc.github.io/#/docs/202111/think-about-fulltext-search-for-marknote.md?sidebar=SIDEBAR.md
+详情介绍点 👉 [这里][post]
+
+[post]: https://yuekcc.github.io/#/docs/202111/full-text-search-for-marknote.md
 
 ## TODO
 
